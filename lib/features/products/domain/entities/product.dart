@@ -1,17 +1,19 @@
 class Product {
   final String id;
   final String name;
-  final double price;
-  final String description;
   final String category;
+  final double price;
+  final int stock;
+  final String description;
   final String imageUrl;
 
-  Product({
+  const Product({
     required this.id,
     required this.name,
-    required this.price,
-    required this.description,
     required this.category,
-    this.imageUrl = 'https://picsum.photos/200',
+    required this.price,
+    required this.stock,
+    required this.description,
+    required this.imageUrl,
   });
 }
