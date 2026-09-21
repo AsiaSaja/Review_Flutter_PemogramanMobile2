@@ -21,7 +21,7 @@ class _ProductFormPageState extends ConsumerState<ProductFormPage> {
   final _nameController = TextEditingController();
   final _categoryController = TextEditingController();
   final _priceController = TextEditingController();
-  final _stockController = TextEditingController();
+  final _quantityController = TextEditingController();
   final _descriptionController = TextEditingController();
   final _imageUrlController = TextEditingController();
 
@@ -37,7 +37,7 @@ class _ProductFormPageState extends ConsumerState<ProductFormPage> {
       _nameController.text = product.name;
       _categoryController.text = product.category;
       _priceController.text = product.price.toStringAsFixed(0);
-      _stockController.text = product.stock.toString();
+      _quantityController.text = product.quantity.toString();
       _descriptionController.text = product.description;
       _imageUrlController.text = product.imageUrl;
     }
@@ -48,7 +48,7 @@ class _ProductFormPageState extends ConsumerState<ProductFormPage> {
     _nameController.dispose();
     _categoryController.dispose();
     _priceController.dispose();
-    _stockController.dispose();
+    _quantityController.dispose();
     _descriptionController.dispose();
     _imageUrlController.dispose();
 
@@ -72,7 +72,7 @@ class _ProductFormPageState extends ConsumerState<ProductFormPage> {
       name: _nameController.text.trim(),
       category: _categoryController.text.trim(),
       price: double.parse(_priceController.text.trim()),
-      stock: int.parse(_stockController.text.trim()),
+      quantity: int.parse(_quantityController.text.trim()),
       description: _descriptionController.text.trim(),
       imageUrl: _imageUrlController.text.trim(),
     );
@@ -173,20 +173,20 @@ class _ProductFormPageState extends ConsumerState<ProductFormPage> {
             const SizedBox(height: 16),
 
             TextFormField(
-              controller: _stockController,
+              controller: _quantityController,
               keyboardType: TextInputType.number,
               decoration: const InputDecoration(
-                labelText: 'Stock',
+                labelText: 'quantity',
                 hintText: 'Contoh: 25',
                 border: OutlineInputBorder(),
               ),
               validator: (value) {
                 if (value == null || value.trim().isEmpty) {
-                  return 'Stock wajib diisi';
+                  return 'quantity wajib diisi';
                 }
 
                 if (int.tryParse(value.trim()) == null) {
-                  return 'Stock harus berupa angka bulat';
+                  return 'quantity harus berupa angka bulat';
                 }
 
                 return null;

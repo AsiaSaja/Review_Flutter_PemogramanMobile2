@@ -7,24 +7,47 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:review_flutter_widget/main.dart';
+import 'package:review_flutter_widget/core/di/injection.dart';
+import 'package:review_flutter_widget/features/products/domain/entities/product.dart';
+import 'package:review_flutter_widget/features/products/domain/repositories/product_repository.dart';
+
+class _FakeProductRepository implements ProductRepository {
+  @override
+  Future<List<Product>> getProducts() async => [];
+
+  @override
+  Future<Product?> getProductById(String id) async => null;
+
+  @override
+  Future<void> addProduct(Product product) async {}
+
+  @override
+  Future<void> updateProduct(Product product) async {}
+
+  @override
+  Future<void> deleteProduct(String id) async {}
+
+  @override
+  Future<List<Product>> searchProducts(String query) async => [];
+}
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
-
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
-
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
+  testWidgets('product catalog app renders', (WidgetTester tester) async {
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          productRepositoryProvider.overrideWithValue(_FakeProductRepository()),
+        ],
+        child: const MyApp(),
+      ),
+    );
     await tester.pump();
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    expect(find.text('Hoshika Official Store'), findsOneWidget);
+    expect(find.byType(TextField), findsOneWidget);
+    expect(find.byIcon(Icons.add), findsOneWidget);
   });
 }

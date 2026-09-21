@@ -1,14 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 
 import 'features/products/presentation/pages/product_catalog_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
-  await Hive.initFlutter();
-  await Hive.openBox('products');
 
   runApp(const ProviderScope(child: MyApp()));
 }

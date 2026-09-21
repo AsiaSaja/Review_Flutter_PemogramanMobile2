@@ -130,7 +130,7 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage> {
                   ),
                   const SizedBox(height: 12),
                   Text(
-                    'Stock: ${product.stock}',
+                    'Stock: ${product.quantity}',
                     style: Theme.of(context).textTheme.bodyLarge,
                   ),
                   const SizedBox(height: 24),
@@ -193,6 +193,7 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage> {
           : Image.network(
               product.imageUrl,
               fit: BoxFit.cover,
+              webHtmlElementStrategy: WebHtmlElementStrategy.fallback,
               errorBuilder: (context, error, stackTrace) {
                 return const Icon(Icons.broken_image_outlined, size: 64);
               },

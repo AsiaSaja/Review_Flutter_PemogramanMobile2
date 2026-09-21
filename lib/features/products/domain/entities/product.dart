@@ -3,7 +3,7 @@ class Product {
   final String name;
   final String category;
   final double price;
-  final int stock;
+  final int quantity;
   final String description;
   final String imageUrl;
 
@@ -12,7 +12,7 @@ class Product {
     required this.name,
     required this.category,
     required this.price,
-    required this.stock,
+    required this.quantity,
     required this.description,
     required this.imageUrl,
   });

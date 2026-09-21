@@ -1,8 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:hive/hive.dart';
+import 'package:dio/dio.dart';
 
-import '../../features/products/data/datasources/product_local_datasource.dart';
-import '../../features/products/data/datasources/product_local_datasource_impl.dart';
+import '../../features/products/data/datasources/product_remote_datasource.dart';
+import '../../features/products/data/datasources/product_remote_datasource_impl.dart';
 import '../../features/products/data/repositories/product_repository_impl.dart';
 import '../../features/products/domain/repositories/product_repository.dart';
 import '../../features/products/domain/usecases/get_products.dart';
@@ -13,20 +13,29 @@ import '../../features/products/domain/usecases/get_product_by_id.dart';
 import '../../features/products/domain/usecases/search_products.dart';
 import '../../features/products/domain/usecases/update_product.dart';
 
-final productBoxProvider = Provider<Box>((ref) {
-  return Hive.box('products');
+final dioProvider = Provider<Dio>((ref) {
+  return Dio(
+    BaseOptions(
+      baseUrl: 'https://pos.cicd.web.id',
+      connectTimeout: const Duration(seconds: 10),
+      receiveTimeout: const Duration(seconds: 10),
+      headers: {'Content-Type': 'application/json'},
+    ),
+  )..interceptors.add(LogInterceptor(requestBody: true, responseBody: true));
 });
 
-final productLocalDataSourceProvider = Provider<ProductLocalDataSource>((ref) {
-  final box = ref.watch(productBoxProvider);
+final productRemoteDataSourceProvider = Provider<ProductRemoteDataSource>((
+  ref,
+) {
+  final dio = ref.watch(dioProvider);
 
-  return ProductLocalDataSourceImpl(box);
+  return ProductRemoteDataSourceImpl(dio);
 });
 
 final productRepositoryProvider = Provider<ProductRepository>((ref) {
-  final localDataSource = ref.watch(productLocalDataSourceProvider);
+  final remoteDataSource = ref.watch(productRemoteDataSourceProvider);
 
-  return ProductRepositoryImpl(localDataSource);
+  return ProductRepositoryImpl(remoteDataSource);
 });
 
 final getProductsProvider = Provider<GetProducts>((ref) {

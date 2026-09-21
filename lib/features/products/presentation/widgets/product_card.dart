@@ -26,6 +26,7 @@ class ProductCard extends StatelessWidget {
                     : Image.network(
                         product.imageUrl,
                         fit: BoxFit.cover,
+                        webHtmlElementStrategy: WebHtmlElementStrategy.fallback,
                         errorBuilder: (context, error, stackTrace) {
                           return const Icon(
                             Icons.broken_image_outlined,
@@ -58,7 +59,7 @@ class ProductCard extends StatelessWidget {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    'Stock: ${product.stock}',
+                    'Stock: ${product.quantity}',
                     style: Theme.of(context).textTheme.bodySmall,
                   ),
                 ],

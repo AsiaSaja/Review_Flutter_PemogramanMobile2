@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:dio/dio.dart';
 
 import '../../../../core/di/injection.dart';
 import '../../domain/entities/product.dart';
@@ -50,7 +51,7 @@ class ProductNotifier extends Notifier<ProductState> {
     } catch (e) {
       state = state.copyWith(
         status: ProductStatus.error,
-        message: 'Gagal mengambil data produk',
+        message: _errorMessage('Gagal mengambil data produk', e),
       );
     }
   }
@@ -62,7 +63,7 @@ class ProductNotifier extends Notifier<ProductState> {
     } catch (e) {
       state = state.copyWith(
         status: ProductStatus.error,
-        message: 'Gagal menambahkan produk',
+        message: _errorMessage('Gagal menambahkan produk', e),
       );
     }
   }
@@ -74,7 +75,7 @@ class ProductNotifier extends Notifier<ProductState> {
     } catch (e) {
       state = state.copyWith(
         status: ProductStatus.error,
-        message: 'Gagal mengubah produk',
+        message: _errorMessage('Gagal mengubah produk', e),
       );
     }
   }
@@ -88,7 +89,7 @@ class ProductNotifier extends Notifier<ProductState> {
     } catch (e) {
       state = state.copyWith(
         status: ProductStatus.error,
-        message: 'Gagal menghapus produk $e',
+        message: _errorMessage('Gagal menghapus produk', e),
       );
 
       return false;
@@ -100,10 +101,7 @@ class ProductNotifier extends Notifier<ProductState> {
   }
 
   Future<void> search(String query) async {
-    state = state.copyWith(
-      status: ProductStatus.loading,
-      searchQuery: query,
-    );
+    state = state.copyWith(status: ProductStatus.loading, searchQuery: query);
 
     try {
       final products = await searchProducts(query);
@@ -118,8 +116,25 @@ class ProductNotifier extends Notifier<ProductState> {
     } catch (e) {
       state = state.copyWith(
         status: ProductStatus.error,
-        message: 'Gagal mencari produk',
+        message: _errorMessage('Gagal mencari produk', e),
       );
     }
+  }
+
+  String _errorMessage(String fallback, Object error) {
+    if (error is DioException) {
+      final statusCode = error.response?.statusCode;
+      final detail = error.response?.data is Map
+          ? (error.response?.data['errors'] ?? error.response?.data['message'])
+          : null;
+
+      if (statusCode != null) {
+        return '$fallback (HTTP $statusCode)${detail == null ? '' : ': $detail'}';
+      }
+
+      return '$fallback: ${error.message ?? error.type.name}';
+    }
+
+    return '$fallback: $error';
   }
 }
